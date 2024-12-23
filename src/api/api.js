@@ -1,38 +1,22 @@
 import axios from "axios";
 
+// export const fetchWeatherData = async ({ latitude, longitude, startDate, endDate }) => {
+//   const API_URL = `https://api.open-meteo.com/v1/history?latitude=${latitude}&longitude=${longitude}&start_date=${startDate}&end_date=${endDate}&daily=temperature_2m_max,temperature_2m_min,temperature_2m_mean,apparent_temperature_max,apparent_temperature_min,apparent_temperature_mean&timezone=auto`;
+//   const response = await axios.get(API_URL);
+//   return response.data;
+// };
+
 class Service {
-  static async fetchWeatherApi(url, params) {
+  static async fetchWeather({ latitude, longitude, startDate, endDate }) {
+    console.log(latitude, longitude, startDate, endDate);
     try {
-      const response = await axios.get(url, { params });
+      const response = await axios.get(
+        `https://archive-api.open-meteo.com/v1/archive?latitude=${latitude}&longitude=${longitude}&start_date=${startDate}&end_date=${endDate}&hourly=temperature_2m`
+        // `https://api.open-meteo.com/v1/history?latitude=${latitude}&longitude=${longitude}&start_date=${startDate}&end_date=${endDate}&daily=temperature_2m_max,temperature_2m_min,temperature_2m_mean,apparent_temperature_max,apparent_temperature_min,apparent_temperature_mean&timezone=auto`
+      );
       return response.data;
     } catch (error) {
-      console.error("Error fetching weather data:", error);
-      throw error;
-    }
-  }
-
-  static processWeatherData(response) {
-    try {
-      const utcOffsetSeconds = response.utcOffsetSeconds;
-      const hourly = response.hourly;
-
-      // Helper function to form time ranges
-      const range = (start, stop, step) =>
-        Array.from({ length: (stop - start) / step }, (_, i) => start + i * step);
-
-      const weatherData = {
-        hourly: {
-          time: range(Number(hourly.time[0]), Number(hourly.timeEnd), hourly.interval).map(
-            (t) => new Date((t + utcOffsetSeconds) * 1000)
-          ),
-          temperature2m: hourly.variables[0].valuesArray,
-        },
-      };
-
-      return weatherData;
-    } catch (error) {
-      console.error("Error processing weather data:", error);
-      throw error;
+      console.error(error);
     }
   }
 }

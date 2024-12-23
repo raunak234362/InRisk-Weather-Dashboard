@@ -4,22 +4,21 @@ import { useForm } from "react-hook-form";
 const InputForm = () => {
   const {register, handleSubmit} = useForm();
 
-  const onSubmit = async(inputs) => {
+  const onSubmit = async(inputData) => {
+    console.log(inputData);
     try {
-        const data = await Service.fetchWeather(inputs);
+        const data = await Service.fetchWeather(inputData);
         // setWeatherData(data);
         console.log(data);
       } catch (error) {
         alert("Error fetching data!",error);
-      } finally {
-        // setLoading(false);
-      };
+      } 
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 bg-gray-100 rounded">
       <Input
-        type="number"
+        type="text"
         placeholder="Latitude"
         label="Latitude"
         {...register("latitude")}
@@ -27,7 +26,7 @@ const InputForm = () => {
         required
       />
       <Input
-        type="number"
+        type="text"
         placeholder="Longitude"
         label="Longitude"
         {...register("longitude")}
